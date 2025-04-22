@@ -5,6 +5,7 @@ import Preview from './Preview';
 
 interface TabViewProps {
   className?: string;
+  selectedService: string;
 }
 
 type Tab = {
@@ -14,7 +15,7 @@ type Tab = {
   content: ReactNode;
 };
 
-const TabView: FC<TabViewProps> = ({ className = '' }) => {
+const TabView: FC<TabViewProps> = ({ className = '', selectedService }) => {
   const [activeTab, setActiveTab] = useState<string>('chat');
   const [logs, setLogs] = useState<string[]>([]);
 
@@ -58,10 +59,24 @@ const TabView: FC<TabViewProps> = ({ className = '' }) => {
       label: 'Logs',
       icon: <ListIcon className="w-5 h-5" />,
       content: (
-        <div className="p-4 space-y-2 text-sm text-gray-400">
-          {logs.map((log, index) => (
-            <div key={index}>{log}</div>
-          ))}
+        <div className="flex flex-col flex-1 p-4 space-y-2 overflow-auto">
+          {selectedService ? (
+            logs.length > 0 ? (
+              logs.map((log, index) => (
+                <div key={index} className="text-sm text-gray-300">
+                  {log}
+                </div>
+              ))
+            ) : (
+              <div className="flex items-center justify-center flex-1 text-sm text-gray-500">
+                No logs available for {selectedService}
+              </div>
+            )
+          ) : (
+            <div className="flex items-center justify-center flex-1 text-sm text-gray-500">
+              Select a service to view logs
+            </div>
+          )}
         </div>
       )
     }

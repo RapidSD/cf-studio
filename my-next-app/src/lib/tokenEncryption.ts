@@ -61,8 +61,8 @@ export async function decryptToken(encryptedToken: string): Promise<string> {
     );
 
     return new TextDecoder().decode(decryptedData);
-  } catch (error) {
-    console.error('Failed to decrypt token');
+  } catch (err) {
+    console.error('Error decrypting token:', err);
     return '';
   }
 }

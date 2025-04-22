@@ -6,6 +6,7 @@ import TabView from '@/components/TabView';
 import NoticeBar from '@/components/NoticeBar';
 
 export default function Home() {
+  // selectedService will be used to update UI based on service selection
   const [selectedService, setSelectedService] = useState<string>('');
 
   return (
@@ -16,7 +17,7 @@ export default function Home() {
         <Sidebar onServiceSelect={setSelectedService} />
         
         <main className="flex-1 min-h-0">
-          <TabView />
+          <TabView selectedService={selectedService} />
         </main>
       </div>
     </div>

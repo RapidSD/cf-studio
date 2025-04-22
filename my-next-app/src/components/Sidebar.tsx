@@ -1,7 +1,7 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { CloudIcon, DatabaseIcon, FolderIcon, SettingsIcon, KeyIcon, MenuIcon, XIcon } from 'lucide-react';
 import CloudflareAuthDialog from './auth/CloudflareAuthDialog';
-import { storeToken } from '@/lib/tokenStorage';
+import { storeToken, getToken } from '@/lib/tokenStorage';
 
 interface SidebarProps {
   onServiceSelect: (service: string) => void;
@@ -12,12 +12,19 @@ const Sidebar: FC<SidebarProps> = ({ onServiceSelect }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  useEffect(() => {
+    const token = getToken();
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   const services = [
     { 
-      name: 'Connect Account', 
+      name: isAuthenticated ? 'Reconnect Account' : 'Connect Account', 
       icon: <CloudIcon className="w-5 h-5" />,
       onClick: () => setIsAuthDialogOpen(true),
-      disabled: isAuthenticated
+      disabled: false
     },
     { 
       name: 'Environment', 

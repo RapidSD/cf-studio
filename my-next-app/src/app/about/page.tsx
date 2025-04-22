@@ -19,13 +19,13 @@ export default function About() {
         
         <div className="space-y-6 text-gray-300">
           <p>
-            Cloudflare Studio is an unofficial, experimental project designed to provide a user-friendly interface for building and deploying applications to Cloudflare's platform.
+            Cloudflare Studio is an unofficial, experimental project designed to provide a user-friendly interface for building and deploying applications to Cloudflare&apos;s platform.
           </p>
           
           <div>
             <h2 className="text-xl font-semibold text-white mb-2">Important Notice</h2>
             <p>
-              This project is not affiliated with, endorsed by, or connected to Cloudflare in any official capacity. It is an independent initiative created to explore and experiment with Cloudflare's services.
+              This project is not affiliated with, endorsed by, or connected to Cloudflare in any official capacity. It is an independent initiative created to explore and experiment with Cloudflare&apos;s services.
             </p>
           </div>
           
@@ -37,15 +37,15 @@ export default function About() {
             <ul className="list-disc list-inside mt-2 space-y-1">
               <li>Building web applications and websites</li>
               <li>Managing Cloudflare Workers and Pages</li>
-              <li>Integrating with Cloudflare's services (KV, R2, D1, etc.)</li>
-              <li>Deploying applications to Cloudflare's network</li>
+              <li>Integrating with Cloudflare&apos;s services (KV, R2, D1, etc.)</li>
+              <li>Deploying applications to Cloudflare&apos;s network</li>
             </ul>
           </div>
           
           <div>
             <h2 className="text-xl font-semibold text-white mb-2">Rationale</h2>
             <p>
-              I'm tired of Replit, Cursor, and other AI IDEs not knowing capabilities of Cloudflare. When I'm building a project, I want AI agent to suggest to put files into R2, serve images and videos via Stream, use D1 as database and build workers upon workers upon workers to solve a problem.
+              I&apos;m tired of Replit, Cursor, and other AI IDEs not knowing capabilities of Cloudflare. When I&apos;m building a project, I want AI agent to suggest to put files into R2, serve images and videos via Stream, use D1 as database and build workers upon workers upon workers to solve a problem.
             </p>
           </div>
           

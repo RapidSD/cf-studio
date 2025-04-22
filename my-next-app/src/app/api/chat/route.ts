@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import { NextResponse } from 'next/server';
 
 interface ChatRequest {
@@ -13,7 +15,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       response: `Received: ${body.message}`,
     });
-  } catch (error) {
+  } catch (err) {
+    console.error('Error processing chat:', err);
     return NextResponse.json(
       { error: 'Failed to process message' },
       { status: 500 }

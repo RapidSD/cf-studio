@@ -97,7 +97,7 @@ const CloudflareAuthDialog: FC<CloudflareAuthDialogProps> = ({ isOpen, onClose, 
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <p className="text-gray-300 text-sm">
-                Token is stored locally in your browser and passed to our API when needed, we don't store it and redact it from logs.
+                Token is stored locally in your browser and passed to our API when needed, we don&apos;t store it and redact it from logs.
               </p>
             </div>
             

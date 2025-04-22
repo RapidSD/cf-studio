@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
+  // Create response and get pathname for potential path-based header modifications
+  const pathname = request.nextUrl.pathname;
   const response = NextResponse.next();
 
   // Add security headers
@@ -20,11 +22,14 @@ export function middleware(request: NextRequest) {
     "upgrade-insecure-requests",
   ].join('; ');
 
-  response.headers.set('Content-Security-Policy', cspHeader);
-  response.headers.set('X-Frame-Options', 'DENY');
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  // Set security headers conditionally based on pathname if needed
+  if (!pathname.startsWith('/_next')) {
+    response.headers.set('Content-Security-Policy', cspHeader);
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  }
 
   return response;
 }
