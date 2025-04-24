@@ -1,8 +1,35 @@
 /**
- * Helpers for Google OAuth flows.
+ * Typed Google OAuth helpers
  */
 
-export function getGoogleAuthUrl(env: any): string {
+interface GoogleTokenResponse {
+  access_token: string;
+  expires_in: number;
+  scope?: string;
+  token_type?: string;
+  id_token?: string;
+  refresh_token?: string;
+  error?: string;
+  error_description?: string;
+  [key: string]: unknown;
+}
+
+interface GoogleUserInfo {
+  email: string;
+  email_verified?: boolean;
+  name?: string;
+  picture?: string;
+  sub?: string;
+  [key: string]: unknown;
+}
+
+interface CloudflareEnv {
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
+  AUTH_BASE_URL: string;
+}
+
+export function getGoogleAuthUrl(env: CloudflareEnv): string {
   const { GOOGLE_CLIENT_ID, AUTH_BASE_URL } = env;
   if (!GOOGLE_CLIENT_ID || !AUTH_BASE_URL) {
     throw new Error('Missing Google client ID or AUTH_BASE_URL');
@@ -19,7 +46,10 @@ export function getGoogleAuthUrl(env: any): string {
   return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
 }
 
-export async function exchangeCodeForToken(code: string, env: any): Promise<any> {
+export async function exchangeCodeForToken(
+  code: string,
+  env: CloudflareEnv
+): Promise<GoogleTokenResponse> {
   const redirectUri = new URL('/api/auth/google/callback', env.AUTH_BASE_URL).toString();
   const res = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
@@ -32,7 +62,7 @@ export async function exchangeCodeForToken(code: string, env: any): Promise<any>
       grant_type: 'authorization_code',
     }),
   });
-  const data = await res.json();
+  const data = (await res.json()) as GoogleTokenResponse;
   if (!res.ok) {
     const msg = data.error_description || data.error || 'Failed to exchange code';
     throw new Error(msg);
@@ -40,11 +70,13 @@ export async function exchangeCodeForToken(code: string, env: any): Promise<any>
   return data;
 }
 
-export async function fetchGoogleUserInfo(accessToken: string): Promise<any> {
+export async function fetchGoogleUserInfo(
+  accessToken: string
+): Promise<GoogleUserInfo> {
   const res = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  const data = await res.json();
+  const data = (await res.json()) as GoogleUserInfo;
   if (!res.ok || !data.email) {
     throw new Error('Failed to fetch Google user info');
   }

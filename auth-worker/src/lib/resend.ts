@@ -1,6 +1,12 @@
 /**
  * Helper to send magic link emails via Resend API.
  */
+interface ResendErrorResponse {
+  error?: { message?: string };
+  message?: string;
+  [key: string]: unknown;
+}
+
 export async function sendMagicLink(
   email: string,
   url: string,
@@ -21,9 +27,9 @@ export async function sendMagicLink(
     }),
   });
   if (!res.ok) {
-    let data: any = {};
+    let data: ResendErrorResponse = {};
     try {
-      data = await res.json();
+      data = (await res.json()) as ResendErrorResponse;
     } catch {}
     const msg = data.error?.message ?? data.message ?? `Resend API error ${res.status}`;
     throw new Error(msg);

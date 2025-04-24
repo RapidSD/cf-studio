@@ -35,6 +35,9 @@
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
 	 */
 	"vars": {
+		"AUTH_BASE_URL": "https://auth.cloudflare.studio",
+		"APP_BASE_URL": "https://cloudflare.studio",
+		"RESEND_EMAIL_FROM": "no-reply@cloudflare.studio"
 	},
 	/**
 	 * Note: Use secrets to store sensitive data.
