@@ -1,7 +1,8 @@
 import { FC, ReactNode, useState } from 'react';
-import { MessageSquareIcon, EyeIcon, ListIcon } from 'lucide-react';
-import Chat from './Chat';
+import { MessageSquareIcon, EyeIcon, ListIcon, BookOpenIcon } from 'lucide-react';
+import Chat, { Message } from './Chat';
 import Preview from './Preview';
+import SourcesList from './SourcesList';
 
 interface TabViewProps {
   className?: string;
@@ -15,28 +16,68 @@ type Tab = {
   content: ReactNode;
 };
 
+// Interface for RAG API response
+interface RagResponse {
+  answer: string;
+  context: Array<{
+    content: string;
+    source: string;
+    score: number;
+  }>;
+  search_query: string;
+}
+
 const TabView: FC<TabViewProps> = ({ className = '', selectedService }) => {
   const [activeTab, setActiveTab] = useState<string>('chat');
   const [logs, setLogs] = useState<string[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [sources, setSources] = useState<Array<{
+    content: string;
+    source: string;
+    score: number;
+  }>>([]);
 
   const handleSendMessage = async (message: string) => {
     try {
-      const response = await fetch('/api/chat', {
+      // Call our RAG API
+      const response = await fetch('/api/rag', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ query: message }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send message');
+        throw new Error('Failed to get response');
       }
 
-      const data = await response.json() as { response: string };
-      setLogs(prev => [...prev, `AI: ${data.response}`]);
+      const data = await response.json() as RagResponse;
+      
+      // Add AI response to messages
+      setMessages(prev => [
+        ...prev, 
+        { role: 'assistant', content: data.answer }
+      ]);
+      
+      // Store retrieved sources
+      if (data.context && data.context.length > 0) {
+        setSources(data.context);
+      }
+      
+      // Add to logs for viewing in logs tab
+      setLogs(prev => [
+        ...prev, 
+        `User: ${message}`, 
+        `AI: ${data.answer}`,
+        `Search query: ${data.search_query || message}`
+      ]);
     } catch (error) {
       console.error('Error:', error);
+      setMessages(prev => [
+        ...prev, 
+        { role: 'assistant', content: 'Sorry, I encountered an error while processing your request.' }
+      ]);
       setLogs(prev => [...prev, `Error: Failed to process message`]);
     }
   };
@@ -46,13 +87,31 @@ const TabView: FC<TabViewProps> = ({ className = '', selectedService }) => {
       id: 'chat',
       label: 'Chat',
       icon: <MessageSquareIcon className="w-5 h-5" />,
-      content: <Chat onSendMessage={handleSendMessage} />
+      content: (
+        <div className="flex flex-col flex-1 min-h-0">
+          <Chat 
+            onSendMessage={handleSendMessage} 
+            messages={messages}
+            setMessages={setMessages}
+          />
+        </div>
+      )
     },
     {
       id: 'preview',
       label: 'Preview',
       icon: <EyeIcon className="w-5 h-5" />,
       content: <Preview logs={logs} url="about:blank" />
+    },
+    {
+      id: 'sources',
+      label: 'Sources',
+      icon: <BookOpenIcon className="w-5 h-5" />,
+      content: (
+        <div className="flex flex-col flex-1 min-h-0 overflow-auto bg-gray-900">
+          <SourcesList sources={sources} />
+        </div>
+      )
     },
     {
       id: 'logs',
@@ -87,7 +146,7 @@ const TabView: FC<TabViewProps> = ({ className = '', selectedService }) => {
       {/* Desktop Layout */}
       <div className="hidden md:flex flex-1 min-h-0">
         <div className="flex-1 min-h-0 border-r border-gray-800">
-          <Chat onSendMessage={handleSendMessage} />
+          <Chat onSendMessage={handleSendMessage} messages={messages} setMessages={setMessages} />
         </div>
         <div className="flex-1 min-h-0">
           <Preview logs={logs} url="about:blank" />
