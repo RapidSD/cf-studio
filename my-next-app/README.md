@@ -65,3 +65,47 @@ In order to enable the example:
 After doing this you can run the `dev` or `preview` script and visit the `/api/hello` route to see the example in action.
 
 Finally, if you also want to see the example work in the deployed application make sure to add a `MY_KV_NAMESPACE` binding to your Pages application in its [dashboard kv bindings settings section](https://dash.cloudflare.com/?to=/:account/pages/view/:pages-project/settings/functions#kv_namespace_bindings_section). After having configured it make sure to re-deploy your application.
+
+## RAG (Retrieval-Augmented Generation) Integration
+
+This application includes integration with Cloudflare AutoRAG for improved chat responses with documentation context. To set up the RAG functionality:
+
+### 1. Set up AutoRAG in Cloudflare
+
+1. Create an AutoRAG instance in Cloudflare:
+   - Log in to your Cloudflare dashboard
+   - Navigate to AI > AutoRAG
+   - Follow the setup process to create a new AutoRAG instance
+   - Upload your documentation/content to be indexed
+
+2. Get your AutoRAG API token:
+   - In your AutoRAG dashboard, go to "Use AutoRAG" and select "API"
+   - Create an API token with "AutoRAG - Read" permissions
+   - Copy the token for the next step
+
+### 2. Configure Environment Variables
+
+Create a `.env.local` file in the root of the project with the following variables:
+
+```
+# Cloudflare OAuth credentials
+NEXT_PUBLIC_CLOUDFLARE_CLIENT_ID=your_client_id_here
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Cloudflare AutoRAG configuration
+CLOUDFLARE_ACCOUNT_ID=your_account_id_here
+AUTORAG_NAME=your_autorag_name_here
+AUTORAG_API_TOKEN=your_autorag_api_token_here
+```
+
+Replace the placeholder values with your actual Cloudflare account ID, AutoRAG name, and API token.
+
+### 3. Using the RAG Chat
+
+The application now includes a chat interface that leverages the AutoRAG system:
+
+- **Chat Tab**: Ask questions and get AI-generated responses
+- **Sources Tab**: View the source documents that were used to answer your query
+- **Logs Tab**: See the raw interaction log including the search query used
+
+The RAG system will retrieve relevant context from your documentation and use it to generate more accurate and informed responses.

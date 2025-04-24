@@ -7,10 +7,11 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"pages:build": "pnpm next-on-pages",
+		"pages:build": "node scripts/generate-changelog.js && pnpm next-on-pages",
 		"preview": "pnpm pages:build && wrangler pages dev",
-		"deploy": "pnpm pages:build && wrangler pages deploy",
-		"cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
+		"deploy": "node scripts/generate-changelog.js && pnpm pages:build && wrangler pages deploy",
+		"cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts",
+		"setup": "tsx scripts/setup.ts"
 	},
 	"dependencies": {
 		"@radix-ui/react-dialog": "^1.1.10",
@@ -18,7 +19,9 @@
 		"lucide-react": "^0.503.0",
 		"next": "15.3.0",
 		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"react-dom": "^19.0.0",
+		"react-markdown": "^8.0.7",
+		"remark-gfm": "^3.0.1"
 	},
 	"devDependencies": {
 		"@cloudflare/next-on-pages": "^1.13.12",
@@ -31,8 +34,8 @@
 		"eslint": "^9",
 		"eslint-config-next": "15.3.0",
 		"tailwindcss": "^4",
+		"tsx": "^4.7.1",
 		"typescript": "^5",
-		"vercel": "^41.6.1",
 		"wrangler": "^4.12.0"
 	}
 }

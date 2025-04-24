@@ -1,3 +1,5 @@
+'use client';
+
 import { FC, useEffect, useState } from 'react';
 import { AlertTriangleIcon, XIcon } from 'lucide-react';
 import Link from 'next/link';
